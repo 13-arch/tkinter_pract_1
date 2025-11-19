@@ -25,4 +25,6 @@ if __name__ == '__main__':
     btn = Button(root, text="Показать время", command=insert_time)
     btn.pack(pady=10)
 
+
+    
     root.mainloop()
