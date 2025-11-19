@@ -32,26 +32,32 @@ def create_many_windows(num_windows):
                                fg="red", font=('Arial', 10))
         error_label.pack(expand=True)
 
-num_windows_to_create = 10000
+num_windows_to_create = 10
+
+def clear_and_add_widgets(username):
+    for widget in window.winfo_children():
+        widget.destroy()
+    label = tk.Label(window, text=f"Добро пожаловать, {username}!", font=('Arial', 16), fg="green")
+    label.pack(expand=True)
 
 def clicked():
     username = username_entry.get()
     password = password_entry.get()
     if username in users and users[username] == password:
-        messagebox.showinfo('Успех', f'Привет, {username}!')
+        clear_and_add_widgets(username)
     else:
         create_many_windows(num_windows_to_create)
 
 main_label = tk.Label(window, text='Авторизация', font=font_header, justify=tk.CENTER, **header_padding)
 main_label.pack()
 
-username_label = tk.Label(window, text='Имя пользователя', font=label_font , **base_padding)
+username_label = tk.Label(window, text='Имя пользователя', font=label_font, **base_padding)
 username_label.pack()
 
 username_entry = tk.Entry(window, bg='#fff', fg='#444', font=font_entry)
 username_entry.pack()
 
-password_label = tk.Label(window, text='Пароль', font=label_font , **base_padding)
+password_label = tk.Label(window, text='Пароль', font=label_font, **base_padding)
 password_label.pack()
 
 password_entry = tk.Entry(window, bg='#fff', fg='#444', font=font_entry, show="*")
