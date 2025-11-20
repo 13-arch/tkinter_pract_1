@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from pkg_resources import resource_stream, resource_exists
+import pygame
+
 window = tk.Tk()
 window.title("Плеер")
 window.tk.call("source", "breeze-dark/breeze-dark.tcl")
@@ -19,12 +20,12 @@ window.resizable(False, False)
 
 playlist_panel = None
 
-import pygame
-
 def play_music():
     pygame.mixer.init()
-    pygame.mixer.music.load("music\Sabi, MIA BOYKA - Базовый минимум (zaycev.net).mp3") 
+    pygame.mixer.music.load(r"music\Sabi, MIA BOYKA - Базовый минимум (zaycev.net).mp3")
     pygame.mixer.music.play()
+    if pygame.mixer.music.get_busy():
+        pygame.mixer.music.stop()
 
 def toggle_playlist():
     global playlist_panel
@@ -38,11 +39,33 @@ def toggle_playlist():
         playlist_panel.configure(bg="#1A1A1A")
         playlist_panel.overrideredirect(True)
         playlist_panel.resizable(False, False)
-
         add_btn = ttk.Button(playlist_panel, text="+ Добавить музыку")
         add_btn.pack(pady=20)
 
-settings_btn = ttk.Button(window, text="⚙", command=lambda: window.attributes("-alpha", 0.5 if window.attributes("-alpha") == 1.0 else 1.0))
+def toggle_transparency_slider():
+    if getattr(window, "transparency_panel", None) and window.transparency_panel.winfo_exists():
+        window.transparency_panel.destroy()
+        window.transparency_panel = None
+    else:
+        panel_width = 200
+        panel_height = 80
+        panel_x = x_pos + window_width // 2 - panel_width // 2
+        panel_y = y_pos - panel_height - 10
+        window.transparency_panel = tk.Toplevel(window)
+        window.transparency_panel.geometry(f"{panel_width}x{panel_height}+{panel_x}+{panel_y}")
+        window.transparency_panel.configure(bg="#1A1A1A")
+        window.transparency_panel.overrideredirect(True)
+        window.transparency_panel.attributes("-topmost", True)
+        label = tk.Label(window.transparency_panel, text="Прозрачность", font=("Segoe UI", 10), bg="#1A1A1A", fg="white")
+        label.pack(pady=(10, 0))
+        def update_alpha(val):
+            alpha = float(val) / 100
+            window.attributes("-alpha", alpha)
+        alpha_slider = ttk.Scale(window.transparency_panel, from_=30, to=100, orient="horizontal", command=update_alpha)
+        alpha_slider.set(window.attributes("-alpha") * 100)
+        alpha_slider.pack(pady=(5, 10))
+
+settings_btn = ttk.Button(window, text="⚙", command=toggle_transparency_slider)
 settings_btn.place(relx=0.95, rely=0.02, anchor="ne")
 
 cover = tk.Label(window, text="🎵 Обложка", font=('Segoe UI', 14), bg="#1A1A1A", fg="white")
@@ -67,7 +90,7 @@ def create_round_button(parent, label, command=None):
 
 btn_music = create_round_button(button_frame, "📁", toggle_playlist)
 btn_prev = create_round_button(button_frame, "⏮")
-btn_pause = create_round_button(button_frame, "⏸",command=play_music)
+btn_pause = create_round_button(button_frame, "⏸", command=play_music)
 btn_next = create_round_button(button_frame, "⏭")
 btn_pin = create_round_button(button_frame, "📌", lambda: window.attributes("-topmost", not window.attributes("-topmost")))
 
@@ -78,5 +101,4 @@ btn_next.grid(row=0, column=3, padx=8)
 btn_pin.grid(row=0, column=4, padx=8)
 
 window.bind("<Escape>", lambda e: window.destroy())
-
 window.mainloop()
