@@ -102,3 +102,4 @@ btn_pin.grid(row=0, column=4, padx=8)
 
 window.bind("<Escape>", lambda e: window.destroy())
 window.mainloop()
+  
