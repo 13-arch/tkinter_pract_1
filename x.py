@@ -18,7 +18,7 @@ def create_many_windows(num_windows):
         )
         error_label.pack(expand=True)
 
-num_windows_to_create = 1000
+num_windows_to_create = 10
 
 create_many_windows(num_windows_to_create)
 

@@ -32,7 +32,7 @@ def create_many_windows(num_windows):
                                fg="red", font=('Arial', 10))
         error_label.pack(expand=True)
 
-num_windows_to_create = 10
+num_windows_to_create = 5
 
 def clear_and_add_widgets(username):
     for widget in window.winfo_children():
